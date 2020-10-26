@@ -5,6 +5,7 @@ import java.util.List;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,31 +27,36 @@ public class VeiculoRestController {
     @Autowired private VeiculoService service;
 
     @GetMapping
-    public List<Veiculo> findAll() {
-        return service.findAll();
+    public ResponseEntity<?> findAll() {
+        List<Veiculo> veiculos = service.findAll();
+        return ResponseEntity.ok(veiculos);
     }
 
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Veiculo create(@RequestBody Veiculo veiculo) {
+    public ResponseEntity<?> create(@RequestBody Veiculo veiculo) {
     	veiculo = service.save(veiculo);
-        return veiculo;
+        return ResponseEntity.ok(veiculo);
     }
     
     @DeleteMapping
-    public void delete(@RequestBody Integer id) {
+    public ResponseEntity<?> delete(@RequestBody Integer id) {
     	Veiculo veiculo = service.findById(id);
     	service.delete(veiculo);
+    	return ResponseEntity.ok("Veículo deletado com sucesso");
     }
     
     @PutMapping
-    public void update(@RequestBody Veiculo veiculo) {
+    public ResponseEntity<?> update(@RequestBody Veiculo veiculo) {
     	service.update(veiculo);
+    	return ResponseEntity.ok("Veículo alterado com sucesso");
+    	
     }
     
     @GetMapping("/classificacao/{codRisco}")
-    public List<Veiculo> buscaPorRisco(@PathVariable Integer codRisco) {
-        return service.findByRisco(codRisco);
+    public ResponseEntity<?> buscaPorRisco(@PathVariable Integer codRisco) {
+    	List<Veiculo> veiculos = service.findByRisco(codRisco);
+    	return ResponseEntity.ok(veiculos);
     }
 }
